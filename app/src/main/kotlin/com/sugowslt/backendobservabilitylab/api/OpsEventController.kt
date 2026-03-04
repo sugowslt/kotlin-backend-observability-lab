@@ -17,10 +17,20 @@ class OpsEventController {
 	@PostMapping
 	fun publish(@Valid @RequestBody request: OpsEventRequest): Map<String, Any> {
 		val traceId = MDC.get("traceId") ?: "unknown"
+
+		if (request.delayMs > 0) {
+			Thread.sleep(request.delayMs)
+		}
+
+		if (request.forceError) {
+			throw IllegalStateException("forced error for drill")
+		}
+
 		logger.info(
-			"ops.event.accepted eventType={} payloadSize={} traceId={}",
+			"ops.event.accepted eventType={} payloadSize={} delayMs={} traceId={}",
 			request.eventType,
 			request.payload.length,
+			request.delayMs,
 			traceId,
 		)
 

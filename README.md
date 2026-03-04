@@ -113,7 +113,17 @@
 - 검증
   - `cd app && .\gradlew.bat test` 통과
   - `GET /actuator/health` 응답 `UP` 확인
-- 다음 이슈: ISSUE-3 (장애 재현 드릴 1차)
+- ISSUE-3 완료: 장애 재현 드릴 1차 + TTD 기록
+- 구현
+  - 드릴 스크립트: `scripts/run-week2-drill.ps1`
+  - 결과: `week2-drill-result.json`, `week2-drill-result.md`
+- 실측 결과
+  - latency-spike TTD: 5.05s
+  - error-spike TTD: 25.02s
+- 트러블슈팅
+  - 원인: `http_server_requests_seconds_bucket` 미노출(summary 타입만 노출)
+  - 해결: latency alert/query를 `http_server_requests_seconds_max` 기반으로 전환
+- 다음 이슈: ISSUE-4 (런북 템플릿 실전 채우기)
 
 ## 12) Week 1 실행 순서
 1. 운영 목표/지표 정의 (`operations-sli-goals.md`)
