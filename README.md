@@ -147,3 +147,15 @@
 - 운영 지표 수집 경로 확보
 - 로그 추적 가능 상태 확보
 - 장애 대응 문서 템플릿 생성
+
+## 14) Week 3 진행 상태
+- ISSUE-1 완료: 경보 민감도 튜닝안 정의 및 1차 적용
+- 구현
+  - `week3-alert-tuning-notes.md` (Profile-A/Profile-B, 선택 기준)
+  - `prometheus/alerts.yml` 기준값 조정(latency 250ms, error 2%)
+- ISSUE-2 완료: 장애 재현 드릴 3회 반복 자동화
+- 구현
+  - `scripts/run-week3-drill-series.ps1`
+  - 실행 시 `week3-drill-run-1..N.json`, `week3-drill-series-result.json` 자동 생성
+- 다음 이슈
+  - ISSUE-3: Week3 운영 리포트(중앙값 TTD + 전/후 비교)

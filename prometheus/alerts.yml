@@ -2,7 +2,7 @@ groups:
   - name: project3-observability-rules
     rules:
       - alert: Project3HighLatencyP95
-        expr: max_over_time(http_server_requests_seconds_max{uri="/api/v1/ops/events"}[2m]) > 0.2
+        expr: max_over_time(http_server_requests_seconds_max{uri="/api/v1/ops/events"}[2m]) > 0.25
         for: 2m
         labels:
           severity: warning
@@ -11,7 +11,7 @@ groups:
           description: "request max latency is above 200ms for 2m"
 
       - alert: Project3HighErrorRate
-        expr: (sum(rate(http_server_requests_seconds_count{status=~"5.."}[2m])) / clamp_min(sum(rate(http_server_requests_seconds_count[2m])), 1)) > 0.01
+        expr: (sum(rate(http_server_requests_seconds_count{status=~"5.."}[2m])) / clamp_min(sum(rate(http_server_requests_seconds_count[2m])), 1)) > 0.02
         for: 2m
         labels:
           severity: critical
