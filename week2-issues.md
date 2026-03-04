@@ -20,12 +20,16 @@
 ---
 
 ### ISSUE-2: 앱 안정성 설정(Timeout/Graceful Shutdown)
-- [ ] 서버 graceful shutdown 설정
-- [ ] 요청 타임아웃 정책 기본값 정의
-- [ ] 운영용 설정 문서화
+- [x] 서버 graceful shutdown 설정
+- [x] 요청 타임아웃 정책 기본값 정의
+- [x] 운영용 설정 문서화
 
 완료 기준
 - 설정 적용 후 재기동/종료 시나리오 문서 확인
+
+산출물
+- `app/src/main/resources/application.yml`
+- `stability-settings-week2.md`
 
 ---
 

@@ -106,7 +106,14 @@
 - 검증
   - `GET http://localhost:19090/api/v1/rules`에서 `project3-observability-rules` 그룹 조회 확인
   - rules API에서 3개 alert rule(`Project3HighLatencyP95`, `Project3HighErrorRate`, `Project3AppDown`) 확인
-- 다음 이슈: ISSUE-2 (Timeout/Graceful Shutdown)
+- ISSUE-2 완료: Timeout/Graceful Shutdown 기본값 적용
+- 구현
+  - `application.yml`: graceful shutdown + timeout 기본값 반영
+  - 운영 문서: `stability-settings-week2.md`
+- 검증
+  - `cd app && .\gradlew.bat test` 통과
+  - `GET /actuator/health` 응답 `UP` 확인
+- 다음 이슈: ISSUE-3 (장애 재현 드릴 1차)
 
 ## 12) Week 1 실행 순서
 1. 운영 목표/지표 정의 (`operations-sli-goals.md`)

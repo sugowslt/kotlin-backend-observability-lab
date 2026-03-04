@@ -1,6 +1,11 @@
 spring:
   application:
     name: backend-observability-lab
+  lifecycle:
+    timeout-per-shutdown-phase: ${SHUTDOWN_PHASE_TIMEOUT:20s}
+  mvc:
+    async:
+      request-timeout: ${MVC_ASYNC_TIMEOUT:5s}
 
 management:
   endpoints:
@@ -14,3 +19,6 @@ management:
 
 server:
   port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  tomcat:
+    connection-timeout: ${TOMCAT_CONNECTION_TIMEOUT:5s}
