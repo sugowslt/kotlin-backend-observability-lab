@@ -19,22 +19,36 @@
 ---
 
 ### ISSUE-2: 프로젝트/환경 초기화
-- [ ] Kotlin Spring Boot 프로젝트 생성
-- [ ] Actuator/Micrometer 의존성 추가
-- [ ] Docker Compose 기본 구성
+- [x] Kotlin Spring Boot 프로젝트 생성
+- [x] Actuator/Micrometer 의존성 추가
+- [x] Docker Compose 기본 구성
 
 완료 기준
 - `/actuator/health` 확인 가능
 
+산출물
+- `app/`
+- `app/build.gradle.kts`
+- `app/src/main/resources/application.yml`
+- `docker-compose.yml`
+- `prometheus/prometheus.yml`
+
 ---
 
 ### ISSUE-3: 구조화 로그 적용
-- [ ] 공통 로그 포맷(JSON 또는 key-value) 적용
-- [ ] Trace ID/MDC 연동
-- [ ] 에러 로그 표준 필드 정의
+- [x] 공통 로그 포맷(JSON 또는 key-value) 적용
+- [x] Trace ID/MDC 연동
+- [x] 에러 로그 표준 필드 정의
 
 완료 기준
 - 요청 1회당 추적 가능한 로그 출력 확인
+
+산출물
+- `app/src/main/kotlin/com/sugowslt/backendobservabilitylab/logging/TraceIdFilter.kt`
+- `app/src/main/kotlin/com/sugowslt/backendobservabilitylab/common/GlobalExceptionHandler.kt`
+- `app/src/main/kotlin/com/sugowslt/backendobservabilitylab/common/ApiErrorResponse.kt`
+- `app/src/main/kotlin/com/sugowslt/backendobservabilitylab/api/OpsEventController.kt`
+- `app/src/main/kotlin/com/sugowslt/backendobservabilitylab/api/OpsEventRequest.kt`
 
 ---
 
@@ -58,5 +72,5 @@
 
 ## Week 1 DoD
 - [ ] 운영 지표 수집 경로 확보
-- [ ] 로그 추적 가능 상태 확보
+- [x] 로그 추적 가능 상태 확보
 - [ ] 장애 대응 문서 템플릿 생성

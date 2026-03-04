@@ -9,21 +9,59 @@
 
 ## 2) 현재 상태 (Week 1 시작)
 - ISSUE-1 완료: 운영 목표/지표 정의
-- 다음 이슈: ISSUE-2 (프로젝트/환경 초기화)
+- ISSUE-2 완료: 프로젝트/환경 초기화(Spring Boot + Actuator/Micrometer + Docker Compose)
+- ISSUE-3 완료: 구조화 로그 + Trace ID/MDC + 표준 에러 필드
+- 다음 이슈: ISSUE-4 (메트릭 노출 + 시각화 준비)
 
 관련 문서
 - `activity-plan.md`
 - `week1-issues.md`
 - `operations-sli-goals.md`
 
-## 3) Week 1 실행 순서
+## 3) ISSUE-2 완료 결과
+- 산출물
+  - `app/` (Spring Boot Kotlin 프로젝트)
+  - `app/build.gradle.kts` (Actuator + Prometheus Micrometer 의존성)
+  - `app/src/main/resources/application.yml` (health/info/metrics/prometheus 노출)
+  - `docker-compose.yml` (Prometheus + Grafana 기본 구성)
+  - `prometheus/prometheus.yml` (앱 메트릭 scrape 설정)
+- 검증
+  - `cd app && .\gradlew.bat test`
+  - `cd app && .\gradlew.bat bootRun`
+  - `GET http://localhost:8080/actuator/health` 응답 확인
+
+## 4) 로컬 실행 가이드
+1. 앱 실행
+	- `cd app`
+	- `.\gradlew.bat bootRun`
+2. 헬스체크
+	- `http://localhost:8080/actuator/health`
+3. 관측 스택 실행
+	- `docker compose up -d`
+4. 확인 URL
+	- Prometheus: `http://localhost:19090`
+	- Grafana: `http://localhost:13000` (admin/admin)
+
+## 5) ISSUE-3 완료 결과
+- 구현
+  - Trace ID 필터(`TraceIdFilter`) 적용: `X-Trace-Id` 수신/생성 + MDC 저장 + 응답 헤더 반환
+  - 요청 시작/종료 구조화 로그: `http.request.start`, `http.request.end`
+  - 에러 표준 필드 응답: `status`, `errorCode`, `message`, `path`, `traceId`
+  - 테스트용 API: `POST /api/v1/ops/events`
+- 검증
+  - `cd app && .\gradlew.bat test`
+  - `cd app && .\gradlew.bat bootRun`
+  - 정상 요청: `POST /api/v1/ops/events` -> 응답에 `traceId` 확인
+  - 실패 요청(빈 필드): `errorCode=VALIDATION_FAILED`, `traceId` 포함 응답 확인
+
+## 6) Week 1 실행 순서
 1. 운영 목표/지표 정의 (`operations-sli-goals.md`)
 2. Spring Boot + Actuator/Micrometer + Docker Compose 초기화
 3. 구조화 로그 + Trace ID/MDC 적용
 4. Prometheus/Grafana 수집 경로 구성
 5. CI 기본 파이프라인 구축
 
-## 4) Week 1 DoD
+## 7) Week 1 DoD
 - 운영 지표 수집 경로 확보
 - 로그 추적 가능 상태 확보
 - 장애 대응 문서 템플릿 생성
