@@ -53,12 +53,17 @@
 ---
 
 ### ISSUE-4: 메트릭 노출 + 시각화 준비
-- [ ] `/actuator/prometheus` 노출
-- [ ] Prometheus scrape 설정
-- [ ] Grafana 대시보드 초안 1개
+- [x] `/actuator/prometheus` 노출
+- [x] Prometheus scrape 설정
+- [x] Grafana 대시보드 초안 1개
 
 완료 기준
 - 기본 메트릭 수집 확인
+
+산출물
+- `app/src/main/resources/application.yml`
+- `prometheus/prometheus.yml`
+- `grafana-dashboard-draft.json`
 
 ---
 
@@ -71,6 +76,6 @@
 - CI 1회 실행 성공
 
 ## Week 1 DoD
-- [ ] 운영 지표 수집 경로 확보
+- [x] 운영 지표 수집 경로 확보
 - [x] 로그 추적 가능 상태 확보
 - [ ] 장애 대응 문서 템플릿 생성

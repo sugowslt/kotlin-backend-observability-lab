@@ -11,7 +11,8 @@
 - ISSUE-1 완료: 운영 목표/지표 정의
 - ISSUE-2 완료: 프로젝트/환경 초기화(Spring Boot + Actuator/Micrometer + Docker Compose)
 - ISSUE-3 완료: 구조화 로그 + Trace ID/MDC + 표준 에러 필드
-- 다음 이슈: ISSUE-4 (메트릭 노출 + 시각화 준비)
+- ISSUE-4 완료: 메트릭 노출 + Prometheus 수집 + Grafana 대시보드 초안
+- 다음 이슈: ISSUE-5 (CI 기본 파이프라인)
 
 관련 문서
 - `activity-plan.md`
@@ -54,14 +55,31 @@
   - 정상 요청: `POST /api/v1/ops/events` -> 응답에 `traceId` 확인
   - 실패 요청(빈 필드): `errorCode=VALIDATION_FAILED`, `traceId` 포함 응답 확인
 
-## 6) Week 1 실행 순서
+## 6) ISSUE-4 완료 결과
+- 구현
+  - `application.yml`에서 `/actuator/prometheus` 노출 유지
+  - `prometheus/prometheus.yml`에서 `project3-app` scrape 설정 유지
+  - Grafana 초안 대시보드 파일 추가: `grafana-dashboard-draft.json`
+- 검증
+  - `GET http://localhost:8080/actuator/prometheus` 응답 확인
+  - `GET http://localhost:19090/api/v1/targets`에서 `project3-app` 타깃 `health=up` 확인
+
+## 7) Grafana 대시보드 초안
+- 파일: `grafana-dashboard-draft.json`
+- 포함 패널
+  - Request Rate (req/s)
+  - p95 Latency (ms)
+  - 5xx Error Rate (%)
+  - JVM Heap Memory Used (MB)
+
+## 8) Week 1 실행 순서
 1. 운영 목표/지표 정의 (`operations-sli-goals.md`)
 2. Spring Boot + Actuator/Micrometer + Docker Compose 초기화
 3. 구조화 로그 + Trace ID/MDC 적용
 4. Prometheus/Grafana 수집 경로 구성
 5. CI 기본 파이프라인 구축
 
-## 7) Week 1 DoD
+## 9) Week 1 DoD
 - 운영 지표 수집 경로 확보
 - 로그 추적 가능 상태 확보
 - 장애 대응 문서 템플릿 생성
