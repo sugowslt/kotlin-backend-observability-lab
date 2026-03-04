@@ -123,7 +123,18 @@
 - 트러블슈팅
   - 원인: `http_server_requests_seconds_bucket` 미노출(summary 타입만 노출)
   - 해결: latency alert/query를 `http_server_requests_seconds_max` 기반으로 전환
-- 다음 이슈: ISSUE-4 (런북 템플릿 실전 채우기)
+- ISSUE-4 완료: 런북 템플릿 실전 사례 채우기
+- 구현
+  - `incident-response-template.md`에 실전 사례 1건 기록(원인/대응/재발방지/지표 근거 포함)
+- 검증
+  - Incident 필수 항목(증상/근거/원인/복구/액션) 모두 채움
+- ISSUE-5 완료: Week2 운영 리포트 작성
+- 구현
+  - `week2-operations-report.md` 작성(요청량/지연/에러율, 전후 비교, 다음 과제 3개)
+- Week 2 최종 상태
+  - ISSUE-1~5 완료
+  - Week 2 DoD 3개 항목 완료
+  - 다음 시작점: Week 3(경보 튜닝 + 드릴 반복 측정)
 
 ## 12) Week 1 실행 순서
 1. 운영 목표/지표 정의 (`operations-sli-goals.md`)
