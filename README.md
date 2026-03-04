@@ -12,7 +12,8 @@
 - ISSUE-2 완료: 프로젝트/환경 초기화(Spring Boot + Actuator/Micrometer + Docker Compose)
 - ISSUE-3 완료: 구조화 로그 + Trace ID/MDC + 표준 에러 필드
 - ISSUE-4 완료: 메트릭 노출 + Prometheus 수집 + Grafana 대시보드 초안
-- 다음 이슈: ISSUE-5 (CI 기본 파이프라인)
+- ISSUE-5 완료: GitHub Actions CI 기본 파이프라인
+- Week 1 DoD 완료
 
 관련 문서
 - `activity-plan.md`
@@ -72,14 +73,36 @@
   - 5xx Error Rate (%)
   - JVM Heap Memory Used (MB)
 
-## 8) Week 1 실행 순서
+## 8) ISSUE-5 완료 결과
+- 구현
+  - GitHub Actions 워크플로우 추가: `.github/workflows/ci.yml`
+  - 파이프라인 단계: `test` -> `build`
+  - 실행 경로: `./app/gradlew -p ./app ...`
+- 실패 시 로그 확인 경로
+  - GitHub Repository > **Actions** 탭
+  - 실패한 workflow run 선택
+  - `build-test` job > 실패한 step의 로그 펼쳐서 확인
+
+## 9) 장애 대응 템플릿
+- 파일: `incident-response-template.md`
+- 포함 항목
+  - 지표/로그/traceId 근거
+  - 원인 분석(직접 원인/근본 원인)
+  - 복구 조치 및 재발 방지 액션
+
+## 10) Week 1 최종 상태
+- ISSUE-1~5 완료
+- Week 1 DoD 3개 항목 완료
+- 다음 시작점: Week 2(운영 안정성 강화)
+
+## 11) Week 1 실행 순서
 1. 운영 목표/지표 정의 (`operations-sli-goals.md`)
 2. Spring Boot + Actuator/Micrometer + Docker Compose 초기화
 3. 구조화 로그 + Trace ID/MDC 적용
 4. Prometheus/Grafana 수집 경로 구성
 5. CI 기본 파이프라인 구축
 
-## 9) Week 1 DoD
+## 12) Week 1 DoD
 - 운영 지표 수집 경로 확보
 - 로그 추적 가능 상태 확보
 - 장애 대응 문서 템플릿 생성

@@ -68,14 +68,21 @@
 ---
 
 ### ISSUE-5: CI 기본 파이프라인
-- [ ] GitHub Actions 워크플로우 생성
-- [ ] 빌드 + 테스트 단계 추가
-- [ ] 실패 시 로그 확인 경로 문서화
+- [x] GitHub Actions 워크플로우 생성
+- [x] 빌드 + 테스트 단계 추가
+- [x] 실패 시 로그 확인 경로 문서화
 
 완료 기준
 - CI 1회 실행 성공
 
+산출물
+- `.github/workflows/ci.yml`
+- `README.md` (실패 로그 확인 경로 포함)
+
 ## Week 1 DoD
 - [x] 운영 지표 수집 경로 확보
 - [x] 로그 추적 가능 상태 확보
-- [ ] 장애 대응 문서 템플릿 생성
+- [x] 장애 대응 문서 템플릿 생성
+
+DoD 산출물
+- `incident-response-template.md`
