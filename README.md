@@ -14,10 +14,12 @@
 - ISSUE-4 완료: 메트릭 노출 + Prometheus 수집 + Grafana 대시보드 초안
 - ISSUE-5 완료: GitHub Actions CI 기본 파이프라인
 - Week 1 DoD 완료
+- Week 2 ISSUE-1 완료: Prometheus 알림 규칙 기본 세트
 
 관련 문서
 - `activity-plan.md`
 - `week1-issues.md`
+- `week2-issues.md`
 - `operations-sli-goals.md`
 
 ## 3) ISSUE-2 완료 결과
@@ -95,14 +97,25 @@
 - Week 1 DoD 3개 항목 완료
 - 다음 시작점: Week 2(운영 안정성 강화)
 
-## 11) Week 1 실행 순서
+## 11) Week 2 진행 상태
+- ISSUE-1 완료: Prometheus 알림 규칙 기본 세트
+- 구현
+  - `prometheus/alerts.yml` (p95 latency / 5xx error / app down)
+  - `prometheus/prometheus.yml`의 `rule_files` 반영
+  - `docker-compose.yml`에 `alerts.yml` 마운트 추가
+- 검증
+  - `GET http://localhost:19090/api/v1/rules`에서 `project3-observability-rules` 그룹 조회 확인
+  - rules API에서 3개 alert rule(`Project3HighLatencyP95`, `Project3HighErrorRate`, `Project3AppDown`) 확인
+- 다음 이슈: ISSUE-2 (Timeout/Graceful Shutdown)
+
+## 12) Week 1 실행 순서
 1. 운영 목표/지표 정의 (`operations-sli-goals.md`)
 2. Spring Boot + Actuator/Micrometer + Docker Compose 초기화
 3. 구조화 로그 + Trace ID/MDC 적용
 4. Prometheus/Grafana 수집 경로 구성
 5. CI 기본 파이프라인 구축
 
-## 12) Week 1 DoD
+## 13) Week 1 DoD
 - 운영 지표 수집 경로 확보
 - 로그 추적 가능 상태 확보
 - 장애 대응 문서 템플릿 생성
