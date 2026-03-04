@@ -1,0 +1,29 @@
+﻿{
+    "measuredAt":  "2026-03-05T01:36:59.4224109+09:00",
+    "runs":  3,
+    "latencyMedianTtdSeconds":  0,
+    "errorMedianTtdSeconds":  10.01,
+    "runResults":  [
+                       {
+                           "run":  1,
+                           "measuredAt":  "2026-03-05T01:33:25.1082023+09:00",
+                           "latencyTtdSeconds":  10.02,
+                           "errorTtdSeconds":  30.03,
+                           "source":  "c:\\backendgo\\project3\\week3-drill-run-1.json"
+                       },
+                       {
+                           "run":  2,
+                           "measuredAt":  "2026-03-05T01:35:12.2788636+09:00",
+                           "latencyTtdSeconds":  0,
+                           "errorTtdSeconds":  10,
+                           "source":  "c:\\backendgo\\project3\\week3-drill-run-2.json"
+                       },
+                       {
+                           "run":  3,
+                           "measuredAt":  "2026-03-05T01:36:59.4031905+09:00",
+                           "latencyTtdSeconds":  0,
+                           "errorTtdSeconds":  10.01,
+                           "source":  "c:\\backendgo\\project3\\week3-drill-run-3.json"
+                       }
+                   ]
+}

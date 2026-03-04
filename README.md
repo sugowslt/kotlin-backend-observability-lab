@@ -157,5 +157,10 @@
 - 구현
   - `scripts/run-week3-drill-series.ps1`
   - 실행 시 `week3-drill-run-1..N.json`, `week3-drill-series-result.json` 자동 생성
-- 다음 이슈
-  - ISSUE-3: Week3 운영 리포트(중앙값 TTD + 전/후 비교)
+- ISSUE-3 완료: Week3 운영 리포트 작성
+- 구현
+  - `week3-operations-report.md` (중앙값 TTD, 전/후 비교, 다음 액션 3개)
+- Week 3 최종 상태
+  - ISSUE-1~3 완료
+  - Week 3 DoD 3개 항목 완료
+  - 다음 시작점: Week 4(쿨다운/리셋 포함 드릴 품질 고도화)

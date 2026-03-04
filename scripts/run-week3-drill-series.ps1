@@ -3,7 +3,15 @@ param(
     [string]$PrometheusUrl = "http://localhost:19090",
     [string]$OutputDir = "c:\backendgo\project3",
     [int]$Runs = 3,
-    [int]$GapSeconds = 10
+    [int]$GapSeconds = 10,
+    [int]$LatencySeconds = 70,
+    [int]$LatencyConcurrency = 12,
+    [int]$LatencyDelayMs = 500,
+    [int]$ErrorSeconds = 60,
+    [int]$ErrorConcurrency = 10,
+    [int]$ErrorDelayMs = 0,
+    [int]$QueryTimeoutSec = 180,
+    [int]$PollSec = 5
 )
 
 Set-StrictMode -Version Latest
@@ -37,7 +45,10 @@ for ($i = 1; $i -le $Runs; $i++) {
     $runOutFile = Join-Path $OutputDir ("week3-drill-run-{0}.json" -f $i)
     Write-Host "[Week3 Drill] Run $i/$Runs"
 
-    & $week2Script -BaseUrl $BaseUrl -PrometheusUrl $PrometheusUrl -OutFile $runOutFile
+    & $week2Script -BaseUrl $BaseUrl -PrometheusUrl $PrometheusUrl -OutFile $runOutFile `
+        -LatencySeconds $LatencySeconds -LatencyConcurrency $LatencyConcurrency -LatencyDelayMs $LatencyDelayMs `
+        -ErrorSeconds $ErrorSeconds -ErrorConcurrency $ErrorConcurrency -ErrorDelayMs $ErrorDelayMs `
+        -QueryTimeoutSec $QueryTimeoutSec -PollSec $PollSec
 
     if (-not (Test-Path $runOutFile)) {
         throw "Run output not found: $runOutFile"
