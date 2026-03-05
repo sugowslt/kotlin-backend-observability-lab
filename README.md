@@ -164,3 +164,29 @@
   - ISSUE-1~3 완료
   - Week 3 DoD 3개 항목 완료
   - 다음 시작점: Week 4(쿨다운/리셋 포함 드릴 품질 고도화)
+
+## 15) Week 4 진행 상태
+- ISSUE-1 완료: 드릴 쿨다운 + baseline reset 자동화
+- 구현
+  - `scripts/run-week3-drill-series.ps1`에 `CooldownSeconds`, `BaselineTimeoutSec`, `BaselineStablePolls` 파라미터 추가
+  - run 시작 전 baseline 회복 체크 로직 추가
+  - run 결과에 `baselineRecovered`, `baselineWaitSeconds` 기록
+  - 스크립트 절대경로 의존 제거(스크립트 위치 기반 경로 계산)
+- 검증
+  - 축소 파라미터 스모크 실행으로 결과 JSON/경고 로그 확인
+
+### Week4 드릴 실행 예시
+```powershell
+Set-Location .\project3
+.\scripts\run-week3-drill-series.ps1 `
+  -BaseUrl http://localhost:8080 `
+  -PrometheusUrl http://localhost:19090 `
+  -Runs 3 `
+  -CooldownSeconds 120 `
+  -BaselineTimeoutSec 180 `
+  -BaselineStablePolls 2
+```
+
+### Week4 다음 작업
+- ISSUE-2: 보정 드릴 3회 본측정(쿨다운/리셋 적용)
+- ISSUE-3: Week4 운영 리포트 작성 및 최종 Alert profile 정리

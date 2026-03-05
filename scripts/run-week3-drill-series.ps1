@@ -1,9 +1,12 @@
 param(
     [string]$BaseUrl = "http://localhost:8080",
     [string]$PrometheusUrl = "http://localhost:19090",
-    [string]$OutputDir = "c:\backendgo\project3",
+    [string]$OutputDir = "",
     [int]$Runs = 3,
     [int]$GapSeconds = 10,
+    [int]$CooldownSeconds = 120,
+    [int]$BaselineTimeoutSec = 180,
+    [int]$BaselineStablePolls = 2,
     [int]$LatencySeconds = 70,
     [int]$LatencyConcurrency = 12,
     [int]$LatencyDelayMs = 500,
@@ -17,11 +20,21 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$projectRoot = Split-Path -Parent $scriptRoot
+if ([string]::IsNullOrWhiteSpace($OutputDir)) {
+    $OutputDir = $projectRoot
+}
+
 if ($Runs -lt 3) {
     throw "Runs must be at least 3 to compute median reliably."
 }
 
-$week2Script = "c:\backendgo\project3\scripts\run-week2-drill.ps1"
+if ($BaselineStablePolls -lt 1) {
+    throw "BaselineStablePolls must be at least 1."
+}
+
+$week2Script = Join-Path $scriptRoot "run-week2-drill.ps1"
 if (-not (Test-Path $week2Script)) {
     throw "Missing script: $week2Script"
 }
@@ -39,11 +52,93 @@ function Get-Median {
     return [math]::Round((($left + $right) / 2.0), 2)
 }
 
+function Test-ConditionPositive {
+    param(
+        [string]$PrometheusUrl,
+        [string]$Query
+    )
+
+    $encodedQuery = [System.Uri]::EscapeDataString($Query)
+    $url = "$PrometheusUrl/api/v1/query?query=$encodedQuery"
+    $resp = Invoke-RestMethod -Uri $url -Method Get
+    $result = @($resp.data.result)
+    if ($result.Count -eq 0) {
+        return $false
+    }
+
+    $value = [double]$result[0].value[1]
+    return ($value -gt 0)
+}
+
+function Wait-BaselineRecovery {
+    param(
+        [string]$PrometheusUrl,
+        [string[]]$Queries,
+        [int]$TimeoutSec,
+        [int]$PollSec,
+        [int]$StablePolls
+    )
+
+    $sw = [System.Diagnostics.Stopwatch]::StartNew()
+    $stableCount = 0
+
+    while ($sw.Elapsed.TotalSeconds -lt $TimeoutSec) {
+        $allClear = $true
+
+        foreach ($q in $Queries) {
+            if (Test-ConditionPositive -PrometheusUrl $PrometheusUrl -Query $q) {
+                $allClear = $false
+                break
+            }
+        }
+
+        if ($allClear) {
+            $stableCount++
+            if ($stableCount -ge $StablePolls) {
+                return [pscustomobject]@{
+                    recovered = $true
+                    waitedSeconds = [math]::Round($sw.Elapsed.TotalSeconds, 2)
+                }
+            }
+        }
+        else {
+            $stableCount = 0
+        }
+
+        Start-Sleep -Seconds $PollSec
+    }
+
+    return [pscustomobject]@{
+        recovered = $false
+        waitedSeconds = [math]::Round($sw.Elapsed.TotalSeconds, 2)
+    }
+}
+
 $results = @()
+
+$latencyQuery = "max_over_time(http_server_requests_seconds_max{uri='/api/v1/ops/events'}[1m]) > 0.2"
+$errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',status='500'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events'}[1m])), 1)) > 0.01"
 
 for ($i = 1; $i -le $Runs; $i++) {
     $runOutFile = Join-Path $OutputDir ("week3-drill-run-{0}.json" -f $i)
     Write-Host "[Week3 Drill] Run $i/$Runs"
+
+    if ($i -gt 1 -and $CooldownSeconds -gt 0) {
+        Write-Host "[Week3 Drill] Cooldown ${CooldownSeconds}s before next run"
+        Start-Sleep -Seconds $CooldownSeconds
+    }
+
+    if ($GapSeconds -gt 0) {
+        Start-Sleep -Seconds $GapSeconds
+    }
+
+    $baseline = Wait-BaselineRecovery -PrometheusUrl $PrometheusUrl -Queries @($latencyQuery, $errorQuery) -TimeoutSec $BaselineTimeoutSec -PollSec $PollSec -StablePolls $BaselineStablePolls
+    if (-not $baseline.recovered) {
+        Write-Warning "Baseline not fully recovered within ${BaselineTimeoutSec}s. Continuing run $i."
+    }
+    else {
+        Write-Host "[Week3 Drill] Baseline recovered in $($baseline.waitedSeconds)s"
+    }
 
     & $week2Script -BaseUrl $BaseUrl -PrometheusUrl $PrometheusUrl -OutFile $runOutFile `
         -LatencySeconds $LatencySeconds -LatencyConcurrency $LatencyConcurrency -LatencyDelayMs $LatencyDelayMs `
@@ -61,13 +156,11 @@ for ($i = 1; $i -le $Runs; $i++) {
     $results += [pscustomobject]@{
         run = $i
         measuredAt = $json.measuredAt
+        baselineRecovered = [bool]$baseline.recovered
+        baselineWaitSeconds = [double]$baseline.waitedSeconds
         latencyTtdSeconds = [double]$latency.ttdSeconds
         errorTtdSeconds = [double]$error.ttdSeconds
         source = $runOutFile
-    }
-
-    if ($i -lt $Runs) {
-        Start-Sleep -Seconds $GapSeconds
     }
 }
 
@@ -77,6 +170,12 @@ $errorValues = @($results | ForEach-Object { [double]$_.errorTtdSeconds })
 $summary = [pscustomobject]@{
     measuredAt = (Get-Date).ToString("o")
     runs = $Runs
+    config = [pscustomobject]@{
+        cooldownSeconds = $CooldownSeconds
+        baselineTimeoutSec = $BaselineTimeoutSec
+        baselineStablePolls = $BaselineStablePolls
+        gapSeconds = $GapSeconds
+    }
     latencyMedianTtdSeconds = Get-Median -Values $latencyValues
     errorMedianTtdSeconds = Get-Median -Values $errorValues
     runResults = $results
