@@ -1,0 +1,222 @@
+﻿{
+    "measuredAt":  "2026-03-06T16:03:58.3329294+09:00",
+    "startedAt":  "2026-03-06T16:00:58.0909765+09:00",
+    "durationSeconds":  180,
+    "requestIntervalMs":  1000,
+    "requestCount":  30,
+    "pollCount":  30,
+    "falsePositiveCount":  0,
+    "falsePositiveRate":  0,
+    "polls":  [
+                  {
+                      "checkedAt":  "2026-03-06T16:00:58.1185161+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:04.1328857+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:10.1403342+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:16.1474340+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:22.1531843+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:28.1604639+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:34.1677953+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:40.1743038+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:46.1797406+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:52.1866817+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:01:58.1940609+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:04.2006129+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:10.2069668+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:16.2131092+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:22.2190468+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:28.2259929+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:34.2319843+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:40.2379373+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:46.2432548+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:52.2531746+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:02:58.2598025+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:04.2648631+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:10.2704753+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:16.2765666+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:22.2830100+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:28.2969624+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:34.3024987+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:40.3082102+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:46.3135912+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  },
+                  {
+                      "checkedAt":  "2026-03-06T16:03:52.3191942+09:00",
+                      "firingAlerts":  [
+
+                                       ],
+                      "firingCount":  0
+                  }
+              ]
+}

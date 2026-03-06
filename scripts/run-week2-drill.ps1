@@ -38,7 +38,8 @@ function Invoke-FireAndForget {
                 }
                 $body = $bodyObj | ConvertTo-Json -Compress
                 try {
-                    Invoke-RestMethod -Uri "$BaseUrl/api/v1/ops/events" -Method Post -ContentType "application/json" -Body $body -TimeoutSec 10 | Out-Null
+                    $headers = @{ "X-Traffic-Type" = "drill" }
+                    Invoke-RestMethod -Uri "$BaseUrl/api/v1/ops/events" -Method Post -ContentType "application/json" -Headers $headers -Body $body -TimeoutSec 10 | Out-Null
                 }
                 catch {
                 }
@@ -78,7 +79,7 @@ function Wait-ConditionTrue {
 $scenarios = @()
 
 Write-Host "[Scenario A] Latency spike drill"
-$latencyQuery = "max_over_time(http_server_requests_seconds_max{uri='/api/v1/ops/events'}[1m]) > 0.2"
+$latencyQuery = "max_over_time(http_server_requests_seconds_max{uri='/api/v1/ops/events',traffic_type='drill'}[1m]) > 0.2"
 $latencyJobs = Invoke-FireAndForget -Seconds $LatencySeconds -Concurrency $LatencyConcurrency -Mode "LATENCY" -DelayMs $LatencyDelayMs -ForceError $false
 $latencyTtd = Wait-ConditionTrue -PrometheusUrl $PrometheusUrl -Query $latencyQuery -TimeoutSec $QueryTimeoutSec -PollSec $PollSec
 Wait-Job -Job $latencyJobs | Out-Null
@@ -94,7 +95,7 @@ $scenarios += [pscustomobject]@{
 Start-Sleep -Seconds 10
 
 Write-Host "[Scenario B] Error spike drill"
-$errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',status='500'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events'}[1m])), 1)) > 0.01"
+$errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',traffic_type='drill',status='500'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',traffic_type='drill'}[1m])), 1)) > 0.01"
 $errorJobs = Invoke-FireAndForget -Seconds $ErrorSeconds -Concurrency $ErrorConcurrency -Mode "ERROR" -DelayMs $ErrorDelayMs -ForceError $true
 $errorTtd = Wait-ConditionTrue -PrometheusUrl $PrometheusUrl -Query $errorQuery -TimeoutSec $QueryTimeoutSec -PollSec $PollSec
 Wait-Job -Job $errorJobs | Out-Null

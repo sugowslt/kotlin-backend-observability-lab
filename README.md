@@ -203,3 +203,15 @@ Set-Location .\project3
   - ISSUE-1~3 완료
   - Week 4 DoD 3개 항목 완료
   - 다음 시작점: 정상 구간 오탐률 측정 + 드릴 트래픽 식별 라벨 추가
+
+## 16) 최종 운영 안정화 보강
+- 드릴/정상 트래픽 라벨 분리 완료
+  - 앱 요청 헤더 `X-Traffic-Type` 기반으로 `traffic_type` 메트릭 라벨 추가
+  - Drill 스크립트는 `traffic_type=drill`, 일반 요청은 `traffic_type=normal`으로 기록
+  - Alert rule은 `traffic_type=normal` 기준으로만 평가되도록 조정
+- 정상 구간 오탐률 점검 완료
+  - 산출물: `normal-traffic-false-positive-result.json`, `normal-traffic-false-positive-report.md`
+  - 결과: 180초 관측, 30회 poll, false positive `0건`
+- 현재 상태
+  - `project3` 핵심 구현/실험/운영 문서화 완료
+  - 다음 단계는 선택적 포트폴리오 polish(면접 요약/운영 절차 자동화) 범위

@@ -55,6 +55,10 @@
   3. 배포 직후/민감 시간대에는 `Profile-A`를 임시 적용하는 운영 전략을 유지할 수 있음
 
 ## 7) 다음 운영 개선 액션
-1. 드릴 트래픽 식별 라벨 추가로 실험/일반 요청 지표 완전 분리
-2. 정상 구간 30분 이상 관측으로 오탐률 기준 추가 확보
-3. 배포 직후 자동으로 `Profile-A -> Profile-B` 전환하는 운영 절차 초안 작성
+1. [완료] 드릴 트래픽 식별 라벨 추가로 실험/일반 요청 지표 분리
+2. [완료] 정상 구간 180초 관측에서 false positive 0건 확인
+3. [다음 선택 과제] 배포 직후 자동으로 `Profile-A -> Profile-B` 전환하는 운영 절차 초안 작성
+
+## 8) 후속 보강 결과
+- `traffic_type` 라벨이 `/api/v1/ops/events` 메트릭에 `normal`/`drill`로 분리 기록됨을 raw Prometheus metric에서 확인했다.
+- `normal-traffic-false-positive-result.json` 기준 30회 poll 동안 latency/error 경보 firing은 `0건`이었다.
