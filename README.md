@@ -215,3 +215,65 @@ Set-Location .\project3
 - 현재 상태
   - `project3` 핵심 구현/실험/운영 문서화 완료
   - 다음 단계는 선택적 포트폴리오 polish(면접 요약/운영 절차 자동화) 범위
+
+## 17) 상세 트러블슈팅 기록
+
+### Case 1. Prometheus rules가 비어 보이는 문제
+- 증상
+  - `GET /api/v1/rules`에서 rule group이 비어 있고 alert rule이 보이지 않음
+- 원인
+  - `prometheus/alerts.yml`이 컨테이너에 마운트되지 않아 `rule_files`가 실제로 로드되지 않음
+- 해결
+  - `docker-compose.yml`에 `./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro` 볼륨을 추가하고 재기동
+- 선택 이유
+  - Prometheus 설정 파일 구조를 바꾸지 않고 실제 누락된 파일 연결만 복구하는 최소 수정이었음
+
+### Case 2. latency p95를 histogram으로 계산할 수 없는 문제
+- 증상
+  - `http_server_requests_seconds_bucket`가 없어 기존 p95 쿼리/alert가 동작하지 않거나 `ttdSeconds=-1`이 반복됨
+- 원인
+  - 현재 노출 메트릭이 histogram이 아니라 summary(`count/sum/max`) 중심으로 제공됨
+- 해결
+  - latency drill/alert/query를 `http_server_requests_seconds_max` 기반으로 전환
+- 선택 이유
+  - 계측 라이브러리나 메트릭 구조를 대규모로 바꾸지 않고, 현재 노출 지표만으로 재현 가능한 탐지 경로를 확보할 수 있었음
+
+### Case 3. 드릴 중 `bootRun`이 GC thrashing으로 종료되는 문제
+- 증상
+  - 반복 드릴 도중 `Gradle build daemon has been stopped: since the JVM garbage collector is thrashing` 오류로 앱이 종료됨
+- 원인
+  - `bootRun`은 Gradle 데몬 오버헤드가 포함되어 반복 부하 상황에서 메모리 압박이 더 크게 누적됨
+- 해결
+  - `bootJar` 후 `java -Xms128m -Xmx512m -jar ...` 방식으로 앱 실행 경로를 전환
+- 선택 이유
+  - 운영에 가까운 실행 방식으로 바꾸면서 측정 안정성을 확보하고, Gradle 런타임 영향도 분리할 수 있었음
+
+### Case 4. Week3 반복 드릴에서 latency TTD가 `0s`로 왜곡되는 문제
+- 증상
+  - Week3 드릴 3회 중 2회에서 latency median이 `0.00s`로 집계되어 실제 탐지 시간 해석이 어려움
+- 원인
+  - 이전 run의 윈도우 값이 남아 시작 직후 조건이 즉시 참으로 평가됨
+- 해결
+  - `CooldownSeconds`, `BaselineTimeoutSec`, `BaselineStablePolls`를 도입해 run 시작 전 baseline 회복을 강제
+- 선택 이유
+  - 쿼리 자체를 왜곡 없이 유지하면서 실행 순서와 측정 조건만 제어해 재현성을 높이는 방법이 가장 안전했음
+
+### Case 5. Docker Desktop 엔진 미기동으로 본측정이 막히는 문제
+- 증상
+  - `docker compose up -d`가 pipe 연결 오류와 함께 실패함
+- 원인
+  - Windows에서 Docker Desktop 엔진이 내려간 상태였음
+- 해결
+  - Docker Desktop 앱을 먼저 기동하고, `docker version`으로 engine readiness를 확인한 뒤 관측 스택을 재실행
+- 선택 이유
+  - Week4 본측정은 Prometheus query 기반이라 Docker 엔진이 필수였고, 환경 복구가 가장 직접적인 해결책이었음
+
+### Case 6. drill 트래픽이 정상 운영 경보를 오염시키는 문제
+- 증상
+  - 실험용 drill 요청이 정상 운영 latency/error alert에 함께 반영되어 오탐 해석이 어려움
+- 원인
+  - `/api/v1/ops/events` 메트릭이 drill/normal 요청을 동일 시계열로 집계하고 있었음
+- 해결
+  - `X-Traffic-Type` 헤더와 `traffic_type` 메트릭 라벨을 추가하고, alert/query를 `traffic_type=normal` 기준으로 분리
+- 선택 이유
+  - 서비스 엔드포인트를 나누지 않고도 운영/실험 트래픽을 메트릭 차원에서 구분할 수 있어 유지비용이 가장 낮았음
