@@ -1,0 +1,41 @@
+﻿{
+    "measuredAt":  "2026-03-06T15:47:11.1744729+09:00",
+    "runs":  3,
+    "config":  {
+                   "cooldownSeconds":  120,
+                   "baselineTimeoutSec":  180,
+                   "baselineStablePolls":  2,
+                   "gapSeconds":  5
+               },
+    "latencyMedianTtdSeconds":  10,
+    "errorMedianTtdSeconds":  15.02,
+    "runResults":  [
+                       {
+                           "run":  1,
+                           "measuredAt":  "2026-03-06T15:37:04.1704382+09:00",
+                           "baselineRecovered":  true,
+                           "baselineWaitSeconds":  5.02,
+                           "latencyTtdSeconds":  15.01,
+                           "errorTtdSeconds":  20.01,
+                           "source":  "C:\\backendgo\\project3\\week4-drill-run-1.json"
+                       },
+                       {
+                           "run":  2,
+                           "measuredAt":  "2026-03-06T15:42:10.0845119+09:00",
+                           "baselineRecovered":  true,
+                           "baselineWaitSeconds":  20.01,
+                           "latencyTtdSeconds":  10,
+                           "errorTtdSeconds":  15.02,
+                           "source":  "C:\\backendgo\\project3\\week4-drill-run-2.json"
+                       },
+                       {
+                           "run":  3,
+                           "measuredAt":  "2026-03-06T15:47:11.1268904+09:00",
+                           "baselineRecovered":  true,
+                           "baselineWaitSeconds":  15.01,
+                           "latencyTtdSeconds":  10,
+                           "errorTtdSeconds":  15.01,
+                           "source":  "C:\\backendgo\\project3\\week4-drill-run-3.json"
+                       }
+                   ]
+}

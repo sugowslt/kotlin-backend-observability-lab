@@ -25,9 +25,9 @@
 ---
 
 ### ISSUE-2: 보정 드릴 3회 실행 및 결과 수집
-- [ ] 쿨다운/baseline 옵션 적용 상태로 3회 실행
-- [ ] `week4-drill-run-*.json` 저장
-- [ ] 중앙값 집계(`week4-drill-series-result.json`) 생성
+- [x] 쿨다운/baseline 옵션 적용 상태로 3회 실행
+- [x] `week4-drill-run-*.json` 저장
+- [x] 중앙값 집계(`week4-drill-series-result.json`) 생성
 
 진행 메모
 - 축소 파라미터 스모크에서는 run2~3에서 baseline 미회복 경고 발생
@@ -45,9 +45,9 @@
 ---
 
 ### ISSUE-3: Week4 운영 리포트
-- [ ] 왜곡 요인(윈도우 잔존) 완화 여부 정리
-- [ ] Week3 대비 수치 비교
-- [ ] 최종 Alert profile 확정 또는 잔여 액션 정의
+- [x] 왜곡 요인(윈도우 잔존) 완화 여부 정리
+- [x] Week3 대비 수치 비교
+- [x] 최종 Alert profile 확정 또는 잔여 액션 정의
 
 완료 기준
 - Week4 종료 리포트 1개 완성
@@ -56,6 +56,6 @@
 - `week4-operations-report.md`
 
 ## Week 4 DoD
-- [ ] 드릴 회차 간 baseline 오염 이슈 완화
-- [ ] 반복 실행 중앙값 확보
-- [ ] 최종 운영 개선 액션 확정
+- [x] 드릴 회차 간 baseline 오염 이슈 완화
+- [x] 반복 실행 중앙값 확보
+- [x] 최종 운영 개선 액션 확정

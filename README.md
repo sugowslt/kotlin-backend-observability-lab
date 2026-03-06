@@ -188,5 +188,18 @@ Set-Location .\project3
 ```
 
 ### Week4 다음 작업
-- ISSUE-2: 보정 드릴 3회 본측정(쿨다운/리셋 적용)
-- ISSUE-3: Week4 운영 리포트 작성 및 최종 Alert profile 정리
+- ISSUE-2 완료: 보정 드릴 3회 본측정
+- 구현
+  - `week4-drill-run-1.json`, `week4-drill-run-2.json`, `week4-drill-run-3.json`
+  - `week4-drill-series-result.json`
+- 검증
+  - 3회 모두 `baselineRecovered=true`
+  - Latency median 10.00s, Error median 15.02s
+- ISSUE-3 완료: Week4 운영 리포트 작성 및 최종 Alert profile 정리
+- 구현
+  - `week4-operations-report.md`
+  - 최종 기본 운영 프로필: Profile-B 유지(`latency > 250ms / 2m`, `error rate > 2% / 2m`)
+- Week 4 최종 상태
+  - ISSUE-1~3 완료
+  - Week 4 DoD 3개 항목 완료
+  - 다음 시작점: 정상 구간 오탐률 측정 + 드릴 트래픽 식별 라벨 추가

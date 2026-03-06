@@ -25,3 +25,10 @@
 ## 4) 적용 전략
 - 기본은 Profile-B로 유지하고, 장애 민감 구간(배포 직후 등)에는 Profile-A를 임시 적용한다.
 - Week3 드릴 3회 결과를 보고 최종 운영 기본값을 확정한다.
+
+## 5) 최종 확정값 (Week4 반영)
+- 기본 운영 프로필: `Profile-B`
+- 확정 근거
+	- Week4에서 baseline recovery check + cooldown 적용 후 latency 왜곡(`0s`)이 제거됨
+	- 반복 드릴 기준 Latency median `10.00s`, Error median `15.02s`로 재현 가능한 측정값 확보
+	- 현재 실습 목적상 빠른 탐지보다 재현성과 오탐 억제가 우선

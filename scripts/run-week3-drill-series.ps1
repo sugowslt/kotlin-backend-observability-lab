@@ -2,6 +2,7 @@ param(
     [string]$BaseUrl = "http://localhost:8080",
     [string]$PrometheusUrl = "http://localhost:19090",
     [string]$OutputDir = "",
+    [string]$ResultPrefix = "week3-drill",
     [int]$Runs = 3,
     [int]$GapSeconds = 10,
     [int]$CooldownSeconds = 120,
@@ -120,7 +121,7 @@ $latencyQuery = "max_over_time(http_server_requests_seconds_max{uri='/api/v1/ops
 $errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',status='500'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events'}[1m])), 1)) > 0.01"
 
 for ($i = 1; $i -le $Runs; $i++) {
-    $runOutFile = Join-Path $OutputDir ("week3-drill-run-{0}.json" -f $i)
+    $runOutFile = Join-Path $OutputDir ("{0}-run-{1}.json" -f $ResultPrefix, $i)
     Write-Host "[Week3 Drill] Run $i/$Runs"
 
     if ($i -gt 1 -and $CooldownSeconds -gt 0) {
@@ -181,7 +182,7 @@ $summary = [pscustomobject]@{
     runResults = $results
 }
 
-$summaryFile = Join-Path $OutputDir "week3-drill-series-result.json"
+$summaryFile = Join-Path $OutputDir ("{0}-series-result.json" -f $ResultPrefix)
 $summary | ConvertTo-Json -Depth 8 | Set-Content -Path $summaryFile -Encoding UTF8
 
 Write-Host "Saved summary: $summaryFile"

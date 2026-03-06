@@ -1,0 +1,15 @@
+﻿{
+    "measuredAt":  "2026-03-06T15:47:11.1268904+09:00",
+    "scenarios":  [
+                      {
+                          "scenario":  "latency-spike",
+                          "condition":  "p95 \u003e 200ms",
+                          "ttdSeconds":  10
+                      },
+                      {
+                          "scenario":  "error-spike",
+                          "condition":  "500 error rate \u003e 1%",
+                          "ttdSeconds":  15.01
+                      }
+                  ]
+}
