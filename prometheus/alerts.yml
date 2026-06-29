@@ -1,0 +1,29 @@
+groups:
+  - name: project3-observability-rules
+    rules:
+      - alert: Project3HighLatencyP95
+        expr: max_over_time(http_server_requests_seconds_max{uri="/api/v1/ops/events",traffic_type="normal"}[2m]) > 0.25
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Project3 p95 latency is high"
+          description: "request max latency is above 250ms for 2m"
+
+      - alert: Project3HighErrorRate
+        expr: (sum(rate(http_server_requests_seconds_count{uri="/api/v1/ops/events",traffic_type="normal",status=~"5.."}[2m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri="/api/v1/ops/events",traffic_type="normal"}[2m])), 1)) > 0.02
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Project3 error rate is high"
+          description: "5xx error rate is above 2% for 2m"
+
+      - alert: Project3AppDown
+        expr: up{job="project3-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Project3 app target is down"
+          description: "Prometheus target project3-app is down for 1m"
