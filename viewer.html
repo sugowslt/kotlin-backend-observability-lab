@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>backend-observability-lab viewer</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 24px; background: #0b0f14; color: #e6e9ef; }
+  h1 { font-size: 18px; margin: 0 0 12px; }
+  h2 { font-size: 14px; margin: 24px 0 8px; color: #8b93a1; text-transform: uppercase; letter-spacing: .08em; }
+  .card { background: #11161d; border: 1px solid #1d2530; border-radius: 12px; padding: 16px; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  .muted { color: #8b93a1; }
+</style>
+</head>
+<body>
+<h1>kotlin-backend-observability-lab — 시스템 개요</h1>
+<p class="muted">로컬 Docker Compose: Prometheus, Grafana, Spring Actuator, Ops Event Drill.</p>
+
+<h2>관측 파이프라인</h2>
+<div class="card mono" style="font-size:12px;white-space:pre-wrap;">
+Spring Actuator -> /actuator/prometheus
+Prometheus scrape
+Grafana dashboard
+
+OpsEventController
+ POST /ops/events          : traffic_type + severity
+ POST /ops/events/drill    : drill injection
+ GET  /ops/events/alerts   : recent alert metadata
+</div>
+
+<h2>드릴 결과</h2>
+<div class="card">
+  <canvas id="drill"></canvas>
+</div>
+
+<script>
+new Chart(document.getElementById('drill'), {
+  type: 'line',
+  data: {
+    labels: ['week2-1','week2-2','week2-3','week3-1','week3-2','week3-3','week4-1','week4-2','week4-3'],
+    datasets: [
+      { label: 'TTD sec', data: [5.05,3.12,1.84,26.32,7.45,2.11,18.21,5.66,1.44], borderColor: '#2563eb', tension: .2 },
+      { label: 'false positive count', data: [0,0,0,1,0,0,1,0,0], borderColor: '#ef4444', tension: .2 }
+    ]
+  },
+  options: { plugins: { legend: { labels: { color: '#e6e9ef' } } }, scales: { y: { ticks: { color: '#8b93a1' } }, x: { ticks: { color: '#e6e9ef' } } } }
+});
+</script>
+</body>
+</html>
