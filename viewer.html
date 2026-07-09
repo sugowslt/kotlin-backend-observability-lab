@@ -4,14 +4,39 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>backend-observability-lab viewer</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
-  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 24px; background: #0b0f14; color: #e6e9ef; }
+  :root {
+    --bg: #0b0f14;
+    --panel: #11161d;
+    --border: #1d2530;
+    --text: #e6e9ef;
+    --muted: #8b93a1;
+    --blue: #2563eb;
+    --red: #ef4444;
+    --green: #22c55e;
+    --orange: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 24px; background: var(--bg); color: var(--text); }
   h1 { font-size: 18px; margin: 0 0 12px; }
-  h2 { font-size: 14px; margin: 24px 0 8px; color: #8b93a1; text-transform: uppercase; letter-spacing: .08em; }
-  .card { background: #11161d; border: 1px solid #1d2530; border-radius: 12px; padding: 16px; }
+  h2 { font-size: 14px; margin: 24px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
-  .muted { color: #8b93a1; }
+  .muted { color: var(--muted); }
+  .pill { display: inline-block; border-radius: 999px; padding: 3px 10px; margin: 4px 6px 0 0; background: #16202d; color: #cbd5e1; border: 1px solid #253246; font-size: 12px; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 999px; margin-right: 6px; vertical-align: middle; }
+  .legend .blue::before { background: var(--blue); }
+  .legend .red::before { background: var(--red); }
+  .axis { stroke: #243042; stroke-width: 1; }
+  .line-blue { fill: none; stroke: var(--blue); stroke-width: 3; }
+  .line-red { fill: none; stroke: var(--red); stroke-width: 3; }
+  .dot-blue { fill: var(--blue); }
+  .dot-red { fill: var(--red); }
+  .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .table td { padding: 8px 0; border-bottom: 1px solid #1d2530; }
+  .table td:last-child { text-align: right; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -31,22 +56,47 @@ OpsEventController
 </div>
 
 <h2>드릴 결과</h2>
-<div class="card">
-  <canvas id="drill"></canvas>
+<div class="grid">
+  <div class="card">
+    <div class="legend">
+      <span class="blue">TTD sec</span>
+      <span class="red">false positive</span>
+    </div>
+    <svg viewBox="0 0 500 140" style="width:100%;height:140px;display:block;" role="img" aria-label="TTD and false positive trend">
+      <line class="axis" x1="36" y1="16" x2="36" y2="116"></line>
+      <line class="axis" x1="36" y1="116" x2="474" y2="116"></line>
+      <polyline class="line-blue" points="36,94 92,103 148,108 204,32 260,77 316,103 372,49 428,91 474,109"></polyline>
+      <polyline class="line-red" points="36,116 92,116 148,116 204,92 260,116 316,116 372,92 428,116 474,116"></polyline>
+      <circle class="dot-blue" cx="36" cy="94" r="4"></circle>
+      <circle class="dot-blue" cx="92" cy="103" r="4"></circle>
+      <circle class="dot-blue" cx="148" cy="108" r="4"></circle>
+      <circle class="dot-blue" cx="204" cy="32" r="4"></circle>
+      <circle class="dot-blue" cx="260" cy="77" r="4"></circle>
+      <circle class="dot-blue" cx="316" cy="103" r="4"></circle>
+      <circle class="dot-blue" cx="372" cy="49" r="4"></circle>
+      <circle class="dot-blue" cx="428" cy="91" r="4"></circle>
+      <circle class="dot-blue" cx="474" cy="109" r="4"></circle>
+      <circle class="dot-red" cx="204" cy="92" r="4"></circle>
+      <circle class="dot-red" cx="372" cy="92" r="4"></circle>
+    </svg>
+  </div>
+  <div class="card">
+    <table class="table">
+      <tr><td>Week2 TTD 최소/평균</td><td>1.84s / 3.34s</td></tr>
+      <tr><td>Week3 TTD 최대</td><td>26.32s</td></tr>
+      <tr><td>Week4 false positive</td><td>1건 → 0건</td></tr>
+      <tr><td>드릴 목표</td><td>TTD 5s 이하 유지</td></tr>
+    </table>
+  </div>
 </div>
 
-<script>
-new Chart(document.getElementById('drill'), {
-  type: 'line',
-  data: {
-    labels: ['week2-1','week2-2','week2-3','week3-1','week3-2','week3-3','week4-1','week4-2','week4-3'],
-    datasets: [
-      { label: 'TTD sec', data: [5.05,3.12,1.84,26.32,7.45,2.11,18.21,5.66,1.44], borderColor: '#2563eb', tension: .2 },
-      { label: 'false positive count', data: [0,0,0,1,0,0,1,0,0], borderColor: '#ef4444', tension: .2 }
-    ]
-  },
-  options: { plugins: { legend: { labels: { color: '#e6e9ef' } } }, scales: { y: { ticks: { color: '#8b93a1' } }, x: { ticks: { color: '#e6e9ef' } } } }
-});
-</script>
+<h2>운영 토픽</h2>
+<div class="card">
+  <span class="pill">TraceIdFilter</span>
+  <span class="pill">OpsEventController</span>
+  <span class="pill">Prometheus Export</span>
+  <span class="pill">Grafana Alert</span>
+  <span class="pill">Drill Report</span>
+</div>
 </body>
 </html>
