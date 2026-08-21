@@ -7,7 +7,7 @@ Spring Actuator + Prometheus + Grafana로 운영 관측 파이프라인을 만�
 
 - `X-Trace-Id` 기반 요청 추적
 - 구조화 로그 + 표준 에러 응답
-- Prometheus 수집 + Grafana 시각화
+- Prometheus 수집 + Grafana 대시보드 자동 프로비저닝
 - alert rule 설정 및 반복 드릴
 - `X-Traffic-Type` 기반 `traffic_type` 라벨 분리
 - 정상 구간 false positive 점검: 0건
@@ -45,6 +45,15 @@ docker compose up -d
 - Prometheus: `http://localhost:19090`
 - Grafana: `http://localhost:13000` (`admin/admin`)
 
+Grafana에는 Prometheus 데이터소스와 `Backend Observability` 대시보드가 자동으로 등록됩니다.
+
+### 테스트
+
+```bash
+cd app
+./gradlew test
+```
+
 ## clone만 해도 바로 보기
 
 루트에 `viewer.html`을 넣어뒀어요. clone만 해도 브라우저로 바로 열 수 있습니다.
@@ -57,6 +66,6 @@ open kotlin-backend-observability-lab/viewer.html
 ## 트러블슈팅
 
 - Prometheus rules 미노출: compose 볼륨 마운트가 누락되어서 추가했어요.
-- histogram 미노출로 p95 query 실패: summary 중심 메트릭이라 `http_server_requests_seconds_max`로 전환했습니다.
+- histogram 미노출로 p95 query 실패: `http.server.requests` 히스토그램을 활성화하고 `histogram_quantile` 기반 p95로 변경했습니다.
 - 반복 드릴에서 TTD 0초 왜곡: 이전 run 윈도우 잔존 문제로, cooldown + baseline recovery 체크를 추가했어요.
 - drill 트래픽이 운영 경보 오염: `X-Traffic-Type`, `traffic_type` 라벨을 도입해서 해결했습니다.
