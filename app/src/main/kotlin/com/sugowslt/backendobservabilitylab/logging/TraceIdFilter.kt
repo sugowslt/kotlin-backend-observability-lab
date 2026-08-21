@@ -19,12 +19,8 @@ class TraceIdFilter : OncePerRequestFilter() {
 		response: HttpServletResponse,
 		filterChain: FilterChain,
 	) {
-		val traceId = request.getHeader(TRACE_HEADER)
-			?.takeIf { it.isNotBlank() }
-			?: UUID.randomUUID().toString().replace("-", "").take(16)
-		val trafficType = request.getHeader(TRAFFIC_TYPE_HEADER)
-			?.takeIf { it.isNotBlank() }
-			?: DEFAULT_TRAFFIC_TYPE
+		val traceId = normalizeTraceId(request.getHeader(TRACE_HEADER))
+		val trafficType = normalizeTrafficType(request.getHeader(TRAFFIC_TYPE_HEADER))
 
 		val startNanos = System.nanoTime()
 		MDC.put(MDC_TRACE_KEY, traceId)
@@ -62,7 +58,22 @@ class TraceIdFilter : OncePerRequestFilter() {
 		const val TRACE_HEADER = "X-Trace-Id"
 		const val TRAFFIC_TYPE_HEADER = "X-Traffic-Type"
 		const val DEFAULT_TRAFFIC_TYPE = "normal"
+		const val DRILL_TRAFFIC_TYPE = "drill"
 		const val MDC_TRACE_KEY = "traceId"
 		const val MDC_TRAFFIC_TYPE_KEY = "trafficType"
+		private const val MAX_TRACE_ID_LENGTH = 64
+		private val VALID_TRACE_ID = Regex("[A-Za-z0-9._-]+")
+
+		fun normalizeTrafficType(value: String?): String = when (value?.trim()?.lowercase()) {
+			DRILL_TRAFFIC_TYPE -> DRILL_TRAFFIC_TYPE
+			else -> DEFAULT_TRAFFIC_TYPE
+		}
+
+		fun normalizeTraceId(value: String?): String {
+			val candidate = value?.trim()
+			return candidate
+				?.takeIf { it.length in 1..MAX_TRACE_ID_LENGTH && VALID_TRACE_ID.matches(it) }
+				?: UUID.randomUUID().toString().replace("-", "").take(16)
+		}
 	}
 }

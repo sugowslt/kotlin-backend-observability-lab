@@ -15,10 +15,9 @@ class TrafficTypeObservationConfig {
 	fun serverRequestObservationConvention(): DefaultServerRequestObservationConvention =
 		object : DefaultServerRequestObservationConvention() {
 			override fun getLowCardinalityKeyValues(context: ServerRequestObservationContext): KeyValues {
-				val trafficType = context.carrier
-					?.getHeader(TraceIdFilter.TRAFFIC_TYPE_HEADER)
-					?.takeIf { it.isNotBlank() }
-					?: TraceIdFilter.DEFAULT_TRAFFIC_TYPE
+				val trafficType = TraceIdFilter.normalizeTrafficType(
+					context.carrier?.getHeader(TraceIdFilter.TRAFFIC_TYPE_HEADER),
+				)
 
 				return super.getLowCardinalityKeyValues(context)
 					.and(KeyValue.of("traffic_type", trafficType))
