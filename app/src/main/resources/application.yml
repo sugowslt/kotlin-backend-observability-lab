@@ -8,6 +8,12 @@ spring:
       request-timeout: ${MVC_ASYNC_TIMEOUT:5s}
 
 management:
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 50ms,100ms,200ms,250ms,500ms,1s,2s
   endpoints:
     web:
       exposure:
