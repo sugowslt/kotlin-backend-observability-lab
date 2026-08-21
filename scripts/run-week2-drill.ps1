@@ -1,7 +1,7 @@
 param(
     [string]$BaseUrl = "http://localhost:8080",
     [string]$PrometheusUrl = "http://localhost:19090",
-    [string]$OutFile = "c:\backendgo\project3\week2-drill-result.json",
+    [string]$OutFile = "",
     [int]$LatencySeconds = 120,
     [int]$LatencyConcurrency = 30,
     [int]$LatencyDelayMs = 600,
@@ -14,6 +14,12 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$projectRoot = Split-Path -Parent $scriptRoot
+if ([string]::IsNullOrWhiteSpace($OutFile)) {
+    $OutFile = Join-Path $projectRoot "week2-drill-result.json"
+}
 
 function Invoke-FireAndForget {
     param(
@@ -79,7 +85,7 @@ function Wait-ConditionTrue {
 $scenarios = @()
 
 Write-Host "[Scenario A] Latency spike drill"
-$latencyQuery = "max_over_time(http_server_requests_seconds_max{uri='/api/v1/ops/events',traffic_type='drill'}[1m]) > 0.2"
+$latencyQuery = "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{uri='/api/v1/ops/events',method='POST',traffic_type='drill'}[1m]))) > 0.25"
 $latencyJobs = Invoke-FireAndForget -Seconds $LatencySeconds -Concurrency $LatencyConcurrency -Mode "LATENCY" -DelayMs $LatencyDelayMs -ForceError $false
 $latencyTtd = Wait-ConditionTrue -PrometheusUrl $PrometheusUrl -Query $latencyQuery -TimeoutSec $QueryTimeoutSec -PollSec $PollSec
 Wait-Job -Job $latencyJobs | Out-Null
@@ -88,14 +94,14 @@ $latencyJobs | Remove-Job -Force | Out-Null
 
 $scenarios += [pscustomobject]@{
     scenario = "latency-spike"
-    condition = "p95 > 200ms"
+    condition = "p95 > 250ms"
     ttdSeconds = $latencyTtd
 }
 
 Start-Sleep -Seconds 10
 
 Write-Host "[Scenario B] Error spike drill"
-$errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',traffic_type='drill',status='500'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',traffic_type='drill'}[1m])), 1)) > 0.01"
+$errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',method='POST',traffic_type='drill',status=~'5..'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',method='POST',traffic_type='drill'}[1m])), 0.001)) > 0.02"
 $errorJobs = Invoke-FireAndForget -Seconds $ErrorSeconds -Concurrency $ErrorConcurrency -Mode "ERROR" -DelayMs $ErrorDelayMs -ForceError $true
 $errorTtd = Wait-ConditionTrue -PrometheusUrl $PrometheusUrl -Query $errorQuery -TimeoutSec $QueryTimeoutSec -PollSec $PollSec
 Wait-Job -Job $errorJobs | Out-Null
@@ -104,7 +110,7 @@ $errorJobs | Remove-Job -Force | Out-Null
 
 $scenarios += [pscustomobject]@{
     scenario = "error-spike"
-    condition = "500 error rate > 1%"
+    condition = "5xx error rate > 2%"
     ttdSeconds = $errorTtd
 }
 

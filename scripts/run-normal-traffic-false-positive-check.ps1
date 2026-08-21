@@ -1,7 +1,7 @@
 param(
     [string]$BaseUrl = "http://localhost:8080",
     [string]$PrometheusUrl = "http://localhost:19090",
-    [string]$OutFile = "c:\backendgo\project3\normal-traffic-false-positive-result.json",
+    [string]$OutFile = "",
     [int]$DurationSeconds = 180,
     [int]$RequestIntervalMs = 1000,
     [int]$PollSeconds = 5
@@ -9,6 +9,12 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$projectRoot = Split-Path -Parent $scriptRoot
+if ([string]::IsNullOrWhiteSpace($OutFile)) {
+    $OutFile = Join-Path $projectRoot "normal-traffic-false-positive-result.json"
+}
 
 $headers = @{ "X-Traffic-Type" = "normal" }
 $startedAt = Get-Date

@@ -117,8 +117,8 @@ function Wait-BaselineRecovery {
 
 $results = @()
 
-$latencyQuery = "max_over_time(http_server_requests_seconds_max{uri='/api/v1/ops/events',traffic_type='drill'}[1m]) > 0.2"
-$errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',traffic_type='drill',status='500'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',traffic_type='drill'}[1m])), 1)) > 0.01"
+$latencyQuery = "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{uri='/api/v1/ops/events',method='POST',traffic_type='drill'}[1m]))) > 0.25"
+$errorQuery = "(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',method='POST',traffic_type='drill',status=~'5..'}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{uri='/api/v1/ops/events',method='POST',traffic_type='drill'}[1m])), 0.001)) > 0.02"
 
 for ($i = 1; $i -le $Runs; $i++) {
     $runOutFile = Join-Path $OutputDir ("{0}-run-{1}.json" -f $ResultPrefix, $i)
